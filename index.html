@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Grupos</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+   
+    
+</head>
+<body class="container">
+    
+    <h1 class="text-center">Grupos</h1>
+    
+    <form class="form">
+        <input type="file" id="file" />
+        <button class="btn btn-primary" type="submit" >Gerar</button>
+    </form>
+    
+
+    </div> 
+    <br>
+    <br>
+    
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>GRUPO</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        
+        <tfoot>
+        </tfoot>
+    </table>
+    <script>
+    
+var lista = [];
+
+  var parseExcel = function(file) {
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+       // console.log(e.target);
+
+      var data = e.target.result;
+    
+
+      var workbook = XLSX.read(data, {
+        type: 'binary'
+      });
+
+      workbook.SheetNames.forEach(function(sheetName) {
+        // Here is your object
+        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+        var json_object = JSON.stringify(XL_row_object);
+
+        XL_row_object.forEach(function(currentValue, currentIndex, listObj){
+            var pontuacao = 0;
+            //console.log(currentValue);
+
+            for(var propt in currentValue){
+
+                if(propt = "está empregado"){
+                }{
+                    pontuacao = pontuacao + parseInt(currentValue[propt]);
+                }
+
+            }
+
+            currentValue.pontuacao = pontuacao;
+
+            console.log(currentValue["id"], currentValue.pontuacao);
+            lista.push({id: currentValue["id"], grupo: 2});
+
+           
+
+        });
+
+      });
+
+      lista.forEach(function(currentValue){
+
+        $("table tbody").append("<tr><td>"+currentValue.id+"</td> <td>"+currentValue.grupo+"</td></tr>");
+
+      });
+
+    };
+
+    reader.onerror = function(ex) {
+      console.log(ex);
+    };
+
+    reader.readAsBinaryString(file);
+  };
+
+
+document.querySelector('.form').addEventListener('submit', function(event){
+    event.preventDefault();
+    var filename = event.target.file.files[0];
+    
+    console.log('teste', event.target.file.files);
+
+    parseExcel(filename);
+});
+    
+    </script>
+</body>
+</html>
