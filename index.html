@@ -154,10 +154,10 @@
         });
 
         listaFinal.sort(function(a,b){
-            if (parseInt(a.grupo)  > parseInt(b.grupo)) {
+            if (a.grupo > b.grupo) {
                 return 1;
             }
-            if (parseInt(a.grupo) < parseInt(b.grupo)) {
+            if (a.grupo < b.grupo) {
                 return -1;
             }
             return 0;  
