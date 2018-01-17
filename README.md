@@ -37,7 +37,7 @@ for( var i = 0; i < 9; i++){
 ```
 
 Verticais: "frontEnd", "backEnd", "mobile", "infra".
-Nós agrupamos as colunas de skill em verticais e tambem criamos multiplicadores para que seja possivel atribuir valores diferentes para cada skill.
+Nós agrupamos as colunas de skill em verticais e tambem criamos multiplicadores para que seja possivel atribuir valores diferentes para cada coluna de skill, cada multiplicador é multiplicado a pontuação do aluno.
 
 As verticais são ajustáveis no código javascript através de objetos javascript:
 
