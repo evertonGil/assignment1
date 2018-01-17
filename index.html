@@ -20,9 +20,6 @@
         <input type="file" id="file" />
         <button class="btn btn-primary" type="submit" >Gerar</button>
     </form>
-    
-
-    </div> 
     <br>
     <br>
     
@@ -36,80 +33,162 @@
         </thead>
         <tbody>
         </tbody>
-        
-        <tfoot>
-        </tfoot>
     </table>
     <script>
     
-var lista = [];
+    var listaFinal = [];
+    var frontEnd = {
+        html: 1.5,
+        css: 1.5,
+        javascript: 1,
+        bootstrap: 1,
+        sass: 1,
+        less: 1,
+        angular: 2
+    }
 
-  var parseExcel = function(file) {
-    var reader = new FileReader();
+    var backEnd = {
+        php: 1,	
+        ruby: 1,	
+        java: 1,	
+        python: 1,	
+        csharp: 1,	
+        nodejs: 1,	
+        objectivec: 1,	
+        swift: 1
+    }
 
-    reader.onload = function(e) {
-       // console.log(e.target);
+    var mobile = {
+        android: 1,
+        ionic: 1,
+        xamarin:1
+    }
+    var infra = {
+        servidores_linux: 1,
+        servidores_windows: 1,
+        aws: 1,
+        azure: 1,
+        sql: 1,
+        nosql: 1,
+        git: 1
+    }
 
-      var data = e.target.result;
-    
+    var verticais = ["frontEnd", "backEnd", "mobile", "infra"];
 
-      var workbook = XLSX.read(data, {
-        type: 'binary'
-      });
+    var grupos = [1, 2, 3, 4];
 
-      workbook.SheetNames.forEach(function(sheetName) {
-        // Here is your object
-        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-        var json_object = JSON.stringify(XL_row_object);
 
-        XL_row_object.forEach(function(currentValue, currentIndex, listObj){
-            var pontuacao = 0;
-            //console.log(currentValue);
 
-            for(var propt in currentValue){
+    var parseExcel = function(file) {
+        var reader = new FileReader();
 
-                if(propt = "está empregado"){
-                }{
-                    pontuacao = pontuacao + parseInt(currentValue[propt]);
-                }
+        reader.onload = function(e) {
 
-            }
-
-            currentValue.pontuacao = pontuacao;
-
-            console.log(currentValue["id"], currentValue.pontuacao);
-            lista.push({id: currentValue["id"], grupo: 2});
-
-           
-
+        var data = e.target.result;
+        var workbook = XLSX.read(data, {
+            type: 'binary'
         });
 
-      });
+        workbook.SheetNames.forEach(function(sheetName) {
+            var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            var json_object = JSON.stringify(XL_row_object);
 
-      lista.forEach(function(currentValue){
+            var newList = XL_row_object.map(function(currentValue, currentIndex, listObj){
 
-        $("table tbody").append("<tr><td>"+currentValue.id+"</td> <td>"+currentValue.grupo+"</td></tr>");
+                var obj = {};
+                obj.id = currentValue.id;
+                
+                    verticais.forEach(function(vertical, i, arr){
+                        nomeVertical = vertical;
+                        vertical =  eval(vertical);
 
-      });
+                        obj[nomeVertical] = 0;
 
+                        for(var propt in currentValue){
+                            for(var multiplicador in vertical){
+
+                                if(multiplicador == propt){
+                                   
+                                    obj[nomeVertical] = obj[nomeVertical] + (vertical[multiplicador] * parseFloat(currentValue[propt]));
+                                }
+                            }
+                        }
+                    });
+                
+
+                //console.log(currentValue.id, currentValue.frontEnd, currentValue.backEnd, currentValue.mobile, currentValue.infra );
+
+                //lista.push({id: currentValue["id"], grupo: 2});
+                //console.log(obj);
+                return obj;
+            });
+
+        
+           for( var i = 0; i < 33; i++){
+
+                verticais.forEach(function(vertical, index, arr){
+                    nomeVertical = vertical;
+
+                    newList.sort(function(a, b){
+                        if (a[vertical] > b[vertical]) {
+                            return -1;
+                        }
+                        if (a[vertical] < b[vertical]) {
+                            return 1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
+                    //console.log(grupos);
+                    grupos.forEach(function(grupo, indexGrupo){
+                            var aluno = newList.shift();
+                            console.log(i, aluno);
+                            aluno.grupo = grupo;
+
+                            listaFinal.push(aluno);
+                            i++;
+                    });
+                });
+           }
+          
+
+            console.log(listaFinal);
+        });
+
+        listaFinal.sort(function(a,b){
+            if (a.grupo > b.grupo) {
+                return -1;
+            }
+            if (a.grupo < b.grupo) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;  
+        })
+        .forEach(function(currentValue){
+
+                $("table tbody").append("<tr><td>"+currentValue.id+"</td> <td>"+currentValue.grupo+"</td></tr>");
+
+            });
+
+        };
+
+        reader.onerror = function(ex) {
+        console.log(ex);
+        };
+
+        reader.readAsBinaryString(file);
     };
 
-    reader.onerror = function(ex) {
-      console.log(ex);
-    };
 
-    reader.readAsBinaryString(file);
-  };
+    document.querySelector('.form').addEventListener('submit', function(event){
+        event.preventDefault();
+        var filename = event.target.file.files[0];
+        
+        console.log('teste', event.target.file.files);
 
-
-document.querySelector('.form').addEventListener('submit', function(event){
-    event.preventDefault();
-    var filename = event.target.file.files[0];
-    
-    console.log('teste', event.target.file.files);
-
-    parseExcel(filename);
-});
+        parseExcel(filename);
+    });
     
     </script>
 </body>
